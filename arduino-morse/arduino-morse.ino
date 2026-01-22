@@ -1,15 +1,26 @@
-#define LED LED_BUILTIN
+const int DOT_LED  = 5;   // D5 - светодиод точки
+const int DASH_LED = 6;   // D6 - светодиод тире
 
 const int DOT = 120;
 const int DASH = DOT * 3;
+
 const int SYMBOL_GAP = DOT;
 const int LETTER_GAP = DOT * 3;
 const int WORD_GAP = DOT * 7;
 
-void ledOn(int ms) {
-  digitalWrite(LED, HIGH);
+static const char* READY = "READY";
+static const char* OK_   = "OK";
+static const char* DONE  = "DONE";
+
+void pulse(int pin, int ms) {
+  digitalWrite(pin, HIGH);
   delay(ms);
-  digitalWrite(LED, LOW);
+  digitalWrite(pin, LOW);
+}
+
+void allOff() {
+  digitalWrite(DOT_LED, LOW);
+  digitalWrite(DASH_LED, LOW);
 }
 
 void playScript(const String& script) {
@@ -17,10 +28,10 @@ void playScript(const String& script) {
     char c = script[i];
 
     if (c == '.') {
-      ledOn(DOT);
+      pulse(DOT_LED, DOT);
       delay(SYMBOL_GAP);
     } else if (c == '-') {
-      ledOn(DASH);
+      pulse(DASH_LED, DASH);
       delay(SYMBOL_GAP);
     } else if (c == ' ') {
       delay(LETTER_GAP);
@@ -30,7 +41,7 @@ void playScript(const String& script) {
       /* no-op */
     }
   }
-  digitalWrite(LED, LOW);
+  allOff();
 }
 
 String readLine() {
@@ -55,11 +66,12 @@ String readLine() {
 }
 
 void setup() {
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, LOW);
+  pinMode(DOT_LED, OUTPUT);
+  pinMode(DASH_LED, OUTPUT);
+  allOff();
 
   Serial.begin(115200);
-  Serial.println("READY");
+  Serial.println(READY);
 }
 
 void loop() {
@@ -78,10 +90,9 @@ void loop() {
 
   if (line.startsWith("PLAY:")) {
     String script = line.substring(5);
-
-    Serial.println("OK");
+    Serial.println(OK_);
     playScript(script);
-    Serial.println("DONE");
+    Serial.println(DONE);
     return;
   }
 
