@@ -12,6 +12,13 @@ kotlin {
                 implementation(project(":shared"))
             }
         }
+
+        val macosMain by creating {
+            dependsOn(commonMain)
+        }
+
+        val macosArm64Main by getting { dependsOn(macosMain) }
+        val macosX64Main by getting { dependsOn(macosMain) }
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().configureEach {

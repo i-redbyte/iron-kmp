@@ -1,10 +1,17 @@
 [versions]
 kotlin = "2.0.21"
 agp = "8.5.2"
+compose = "1.6.11"
+coroutines = "1.9.0"
+jserial = "2.11.0"
 
 [libraries]
+coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+jserialcomm = { module = "com.fazecast:jSerialComm", version.ref = "jserial" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

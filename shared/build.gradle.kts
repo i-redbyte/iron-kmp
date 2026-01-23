@@ -5,9 +5,13 @@ plugins {
 kotlin {
     macosArm64()
     macosX64()
-
+    jvm()
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting  {
+            dependencies {
+                implementation(libs.coroutines)
+            }
+        }
 
         val macosMain by creating {
             dependsOn(commonMain)

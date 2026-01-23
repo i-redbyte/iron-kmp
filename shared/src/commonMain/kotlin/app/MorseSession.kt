@@ -1,5 +1,11 @@
 package app
 
+import domain.Protocol.BYE
+import domain.Protocol.DONE
+import domain.Protocol.PING
+import domain.Protocol.PLAY_PREFIX
+import domain.Protocol.PONG
+import domain.Protocol.READY
 import morse.MorseEstimate
 import morse.MorseScript
 import morse.MorseTiming
@@ -17,12 +23,12 @@ class MorseSession(
 ) {
     fun connect(portPath: String, baud: Int = 115200) {
         transport.open(portPath, baud)
-        reader.waitForLine("READY", timeoutMs = 5000)
+        reader.waitForLine(READY, timeoutMs = 5000)
     }
 
     fun sendTextAsMorse(text: String) {
         val script = MorseScript.fromTextRu(text)
-        transport.writeLine("PLAY:$script")
+        transport.writeLine("$PLAY_PREFIX$script")
 
         reader.waitForLine("OK", timeoutMs = 2000)
 
@@ -35,16 +41,16 @@ class MorseSession(
             maxMs = 10 * 60 * 1000
         )
 
-        reader.waitForLine("DONE", timeoutMs = doneTimeout)
+        reader.waitForLine(DONE, timeoutMs = doneTimeout)
     }
 
     fun ping() {
-        transport.writeLine("PING")
-        reader.waitForLine("PONG", timeoutMs = 2000)
+        transport.writeLine(PING)
+        reader.waitForLine(PONG, timeoutMs = 2000)
     }
 
     fun disconnect() {
-        transport.writeLine("BYE")
+        transport.writeLine(BYE)
         reader.readLine(500)
         transport.close()
     }
